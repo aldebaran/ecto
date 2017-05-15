@@ -12,13 +12,15 @@ namespace ecto {
     //BOOST_PYTHON_MODULE(ecto)
     //{
     
-    std::vector<std::string> toStdVector(bp::list l)
+    
+    template<class T>
+    std::vector<T> toStdVector(bp::list l)
     {
-      std::vector<std::string> ret;
-      std::string p;
+      std::vector<T> ret;
+      T p;
       for(int i = 0; i < len(l); i++)
       {
-	p = bp::extract<std::string>(l[i]);
+	p = bp::extract<T>(l[i]);
 	ret.push_back(p);
       }
       return ret;
@@ -38,10 +40,10 @@ namespace ecto {
     template <typename T> bool execute1 (T& s, unsigned arg1)
     { return s.execute(arg1); }
 
-    template <typename T> bool execute2 (T& s, bp::list id) { return s.execute(toStdVector(id)); }
+    template <typename T> bool execute2 (T& s, bp::list id) { return s.execute(toStdVector<std::string>(id)); }
     template <typename T> bool execute3 (T& s, bp::list id) 
     { 
-      std::vector<std::string> v = toStdVector(id);
+      std::vector<std::string> v = toStdVector<std::string>(id);
 	
       return s.execute_thread(v); 
       
