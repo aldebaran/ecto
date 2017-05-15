@@ -99,6 +99,17 @@ graph::graph_t::vertex_descriptor CustomSchedulerSBR::findNode(string id) const
     return ret;
 }
 
+std::map<std::string, int> CustomSchedulerSBR::getDepthMap() const
+{
+  DepthType t = getDepthMap(getAllNodes());
+  std::map<std::string, int> ret;
+  
+  for(auto it = t.begin(); it != t.end(); it++)
+    ret[graph_[it->first]->cell()->name()] = it->second;
+  
+  return ret ;
+}
+
 CustomSchedulerSBR::DepthType CustomSchedulerSBR::getDepthMap(NodesVector vec) const
 {
     DepthType ret;

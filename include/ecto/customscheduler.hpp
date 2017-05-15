@@ -45,8 +45,7 @@ namespace ecto
     bool execute_thread(std::vector<std::string>);
     
     bool run_thread();
-    
-    
+    std::map<std::string, int> getDepthMap() const;
     
   protected:
     void compute_stack(NodesVector);
