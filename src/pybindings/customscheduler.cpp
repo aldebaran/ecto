@@ -24,6 +24,16 @@ namespace ecto {
       return ret;
     }
     
+    template <class K, class V>
+    bp::dict toPythonDict(std::map<K, V> map) {
+	typename std::map<K, V>::iterator iter;
+	    bp::dict dictionary;
+	    for (iter = map.begin(); iter != map.end(); ++iter) {
+		    dictionary[iter->first] = iter->second;
+	    }
+	    return dictionary;
+    }
+    
     template <typename T> bool execute0 (T& s) { return s.execute(); }
     template <typename T> bool execute1 (T& s, unsigned arg1)
     { return s.execute(arg1); }
@@ -50,6 +60,9 @@ namespace ecto {
     template <typename T> bool run2 (T& s)
     { return s.run_thread(); }
 
+    template <typename T> bp::dict depthMap (T& s)
+    { return toPythonDict(s.getDepthMap()); }
+
     template <typename T> 
     void wrap_customscheduler(const char* name)
     {
@@ -71,6 +84,7 @@ namespace ecto {
 	.def("run_thread", &run2<T>)
         .def("run_job", &T::run_job)
         .def("stats", &T::stats)
+	.def("getDepthMap", &depthMap<T>)
 	;
     }
 
