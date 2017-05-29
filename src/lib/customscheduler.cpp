@@ -117,27 +117,25 @@ CustomSchedulerSBR::DepthType CustomSchedulerSBR::getDepthMap(NodesVector vec) c
     
     do
     {
+      turn = false;
       for(auto it = vec.begin(); it != vec.end(); it++)
       {
 	if(ret.count(*it) == 0)
-	  ret[*it] = 0;
+	  ret[*it] = -1;
+	
+	int deep = -1;
 	
 	for(auto it2 = adjacent_vertices(*it, graph_).first; it2 != adjacent_vertices(*it, graph_).second; it2++)
 	{
 	  if(ret.count(*it2) == 0)
-	    ret[*it2] = 0;
+	    ret[*it2] = -1;
 	  
-	  
-	  
-	  if(max(ret[*it]+1, ret[*it2]) != ret[*it2])
-	  {
-	    turn = true;
-	    ret[*it2] = ret[*it]+1;
-	  }
-	  else
-	  {
-	    turn = false;
-	  }
+	  deep = max(deep, ret[*it2]);
+	
+	if(deep+1 != ret[*it])
+	{
+	  ret[*it] = deep+1;
+	  turn = true;
 	}
       }
     }
