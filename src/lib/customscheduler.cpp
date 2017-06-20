@@ -20,9 +20,7 @@ bool CustomSchedulerSBR::execute(vector<std::string> id)
   }
   
   compute_stack(transit);
-  prepare_jobs(1);
-  
-  return run();
+  return this->execute(1);
 }
 
 bool CustomSchedulerSBR::execute_thread(vector<string> id)
@@ -66,7 +64,7 @@ bool CustomSchedulerSBR::run_thread()
 void CustomSchedulerSBR::compute_stack(NodesVector vec)
 {
   NodesVector sub = getSubgraph(vec), localStack;
-  
+
   DepthType m = getDepthMap(sub);
   int i = 0;
   localStack=getDepthNodes(m,i);
@@ -78,6 +76,7 @@ void CustomSchedulerSBR::compute_stack(NodesVector vec)
     i++;
     localStack=getDepthNodes(m,i);
   }
+  reverse(stack_.begin(), stack_.end());
   
 //   cout<<"Compute"<<endl;
 //   for(auto a = stack_.begin(); a != stack_.end(); a++)
