@@ -61,6 +61,7 @@ qi_create_lib(ecto SHARED
   strand.cpp
   test.cpp
   time.cpp
+  customscheduler.cpp
   )
 
 qi_use_lib(ecto

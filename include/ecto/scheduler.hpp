@@ -41,6 +41,7 @@
 
 #include <ecto/graph/types.hpp>
 
+
 namespace ecto {
 
 /**
@@ -71,7 +72,7 @@ public:
   };
 
   explicit scheduler(plasm_ptr p);
-  ~scheduler();
+  virtual ~scheduler();
 
   /** Synchronously execute plasm for num_iters iterations.
    * @param[in] num_iters The number of iterations to execute the plasm. 0 indicates
@@ -133,6 +134,15 @@ public:
   /** @return The current scheduler state. */
   inline State state() const;
 
+protected:
+  ecto::graph::graph_t& graph_;
+void compute_stack();
+  std::vector<ecto::graph::graph_t::vertex_descriptor> stack_;
+  /** Check plasm for correctness, configure it, activate it, then sort it
+   * topologically to populate stack_.
+   * This method is idempotent.
+   */
+  
 private:
   inline State state(State);
   void execute_init(unsigned num_iteRelWithDebInfors);
@@ -141,17 +151,10 @@ private:
   void execute_fini();
   void interrupt();
 
-  /** Check plasm for correctness, configure it, activate it, then sort it
-   * topologically to populate stack_.
-   * This method is idempotent.
-   */
-  void compute_stack();
 
   plasm_ptr plasm_;
-  ecto::graph::graph_t& graph_;
-
-  std::vector<ecto::graph::graph_t::vertex_descriptor> stack_;
-
+  
+ 
   profile::graph_stats_type graphstats_;
 
   boost::asio::io_service io_svc_;

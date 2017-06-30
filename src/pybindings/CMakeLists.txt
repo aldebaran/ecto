@@ -42,6 +42,7 @@ ectomodule(ecto_main DESTINATION ecto INSTALL
   streambuf.cpp
   tendril.cpp
   tendrils.cpp
+  customscheduler.cpp
 )
 
 add_subdirectory(cells)
