@@ -28,19 +28,19 @@
 #### install stuff #####
 #CMake files
 install(FILES doc.cmake ectoMacros.cmake git.cmake
-        DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}/cmake/
+        DESTINATION share/cmake/ecto
 )
 
 #regular headers
 install(DIRECTORY ${ecto_SOURCE_DIR}/include/ecto/
-        DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+        DESTINATION include/ecto
         COMPONENT main
         FILES_MATCHING PATTERN "*.hpp"
 )
 
 #generated headers
-install(DIRECTORY ${CATKIN_DEVEL_PREFIX}/${CATKIN_PACKAGE_INCLUDE_DESTINATION}/
-        DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+install(DIRECTORY ${CMAKE_BINARY_DIR}/sdk/include/ecto/
+        DESTINATION include/ecto
         COMPONENT main
         FILES_MATCHING PATTERN "*.hpp"
 )

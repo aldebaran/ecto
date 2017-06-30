@@ -28,7 +28,7 @@
 get_filename_component(SELF_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
 include(${SELF_DIR}/ectoMacros.cmake)
 
-set(ecto_CONFIG_DIR ${CATKIN_DEVEL_PREFIX}/${CATKIN_PACKAGE_SHARE_DESTINATION}/cmake/)
+set(ecto_CONFIG_DIR ${CMAKE_BINARY_DIR}/sdk/share/cmake/)
 
 #for client projects using ecto documentation tools
 foreach(file doc git ectoMacros)
@@ -36,4 +36,4 @@ foreach(file doc git ectoMacros)
     DESTINATION ${ecto_CONFIG_DIR})
 endforeach()
 
-configure_file(${ecto_SOURCE_DIR}/cmake/config.hpp.in ${CATKIN_DEVEL_PREFIX}/${CATKIN_PACKAGE_INCLUDE_DESTINATION}/config.hpp)
+configure_file(${ecto_SOURCE_DIR}/cmake/config.hpp.in ${CMAKE_BINARY_DIR}/sdk/include/ecto/config.hpp)

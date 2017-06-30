@@ -113,6 +113,8 @@ macro(git_status PROJECT)
     set(${PROJECT}_GITTAG   tag_unavailable)
   endif()
 
+  set(${PROJECT}_VERSION ${${PROJECT}_GITTAG_SHORT})
+
   message(STATUS "${PROJECT} commit:       ${${PROJECT}_COMMITHASH}")
   message(STATUS "${PROJECT} tag (long):   ${${PROJECT}_GITTAG_LONG}")
   message(STATUS "${PROJECT} tag (short):  ${${PROJECT}_GITTAG_SHORT}")

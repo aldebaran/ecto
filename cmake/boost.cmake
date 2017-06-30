@@ -38,7 +38,7 @@ find_package(Boost COMPONENTS
 try_run(BOOST_VERSION_RUN_RESULT BOOST_VERSION_COMPILE_RESULT
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/cmake/boost-version.c
-  COMPILE_DEFINITIONS -I${Boost_INCLUDE_DIRS}
+  COMPILE_DEFINITIONS -I${BOOST_INCLUDE_DIRS}
   COMPILE_OUTPUT_VARIABLE BOOST_VERSION_COMPILE
   RUN_OUTPUT_VARIABLE Boost_VERSION
   )
@@ -53,7 +53,7 @@ macro(boost_feature_check checkname)
     try_compile(${checkname}
       ${CMAKE_BINARY_DIR}/${CMAKE_FILES_DIRECTORY}/${checkname}
       ${CMAKE_CURRENT_SOURCE_DIR}/cmake/boost_checks.cpp
-      COMPILE_DEFINITIONS -I${Boost_INCLUDE_DIRS} -D${checkname}=1
+      COMPILE_DEFINITIONS -I${BOOST_INCLUDE_DIRS} -D${checkname}=1
       OUTPUT_VARIABLE ${checkname}_OUTPUT
       )
     message(STATUS "${checkname}: ${${checkname}}")
@@ -77,4 +77,4 @@ if (NOT ECTO_EXCEPTION_WITHOUT_CLONE)
   set(ECTO_EXCEPTION_HAS_CLONE True)
 endif()
 
-configure_file(${ecto_SOURCE_DIR}/cmake/boost-config.hpp.in ${CATKIN_DEVEL_PREFIX}/${CATKIN_PACKAGE_INCLUDE_DESTINATION}/boost-config.hpp)
+configure_file(${ecto_SOURCE_DIR}/cmake/boost-config.hpp.in ${CMAKE_BINARY_DIR}/sdk/include/ecto/boost-config.hpp)

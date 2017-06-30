@@ -26,21 +26,26 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 #this helps with visual studio projects.
-file(GLOB ecto_HEADERS
-  ${CMAKE_SOURCE_DIR}/include/ecto/*.hpp
-  ${CMAKE_SOURCE_DIR}/include/ecto/*/*.hpp
-  )
-source_group("Headers" FILES ${ecto_HEADERS})
+# file(GLOB ecto_HEADERS
+#   ${CMAKE_SOURCE_DIR}/include/ecto/*.hpp
+#   ${CMAKE_SOURCE_DIR}/include/ecto/*/*.hpp
+#   )
+# source_group("Headers" FILES ${ecto_HEADERS})
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+include_directories(
+  ${CMAKE_SOURCE_DIR}/include
+  ${CMAKE_BINARY_DIR}/sdk/include
+)
 
-add_library(ecto SHARED
+qi_create_lib(ecto SHARED
+  SRC
   abi.cpp
   cell.cpp
   edge.cpp
   tendril.cpp
   tendrils.cpp
   plasm.cpp
+  plasm/impl.hpp
   plasm/impl.cpp
   util.cpp
   log.cpp
@@ -56,38 +61,24 @@ add_library(ecto SHARED
   strand.cpp
   test.cpp
   time.cpp
-  ${ecto_HEADERS}
   )
 
-target_link_libraries(ecto
-  ${Boost_LIBRARIES}
-  ${catkin_LIBRARIES}
-  ${PYTHON_LIBRARIES}
-  ${CMAKE_THREAD_LIBS_INIT}
+qi_use_lib(ecto
+  BOOST_DATE_TIME
+  BOOST_PYTHON
+  BOOST_REGEX
+  BOOST_SERIALIZATION
+  BOOST_SYSTEM
+  BOOST_THREAD
+  PYTHON
+)
+
+qi_stage_lib(ecto
+  CUSTOM_CODE
+  "include(\${CMAKE_CURRENT_LIST_FILE}/../ectoMacros.cmake OPTIONAL)"
 )
 
 set_source_files_properties(log.cpp
   PROPERTIES
   COMPILE_FLAGS -DSOURCE_DIR=\\"${ecto_SOURCE_DIR}\\"
-  )
-
-if(UNIX)
-  set_target_properties(ecto PROPERTIES
-    COMPILE_FLAGS "${FASTIDIOUS_FLAGS}"
-    VERSION ${ecto_VERSION}
-    SOVERSION ${ECTO_SOVERSION}
-    )
-elseif(WIN32)
-  set_target_properties(ecto PROPERTIES
-    COMPILE_FLAGS "${FASTIDIOUS_FLAGS}"
-    VERSION ${ecto_VERSION}
-    SOVERSION ${ECTO_SOVERSION}
-    OUTPUT_NAME ecto_cpp
-    )
-endif()
-
-#install the main shared lib
-install(TARGETS ecto
-        DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-        COMPONENT main
 )

@@ -1,0 +1,6 @@
+<project version="3">
+  <maintainer email="sambrose@aldebaran.com">Surya Ambrose</maintainer>
+  <qibuild name="ecto">
+    <depends buildtime="true" runtime="true" names="boost python"/>
+  </qibuild>
+</project>

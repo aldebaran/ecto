@@ -34,8 +34,8 @@ if(ECTO_LOG_STATS)
 endif()
 
 include(CMakeParseArguments)
-set(ECTO_PYTHON_BUILD_PATH ${CATKIN_DEVEL_PREFIX}/${CATKIN_PACKAGE_PYTHON_DESTINATION}/../)
-set(ECTO_PYTHON_INSTALL_PATH ${CATKIN_PACKAGE_PYTHON_DESTINATION}/../)
+set(ECTO_PYTHON_BUILD_PATH ${CMAKE_BINARY_DIR}/sdk/lib/python2.7/dist-packages/ecto/../)
+set(ECTO_PYTHON_INSTALL_PATH lib/python2.7/dist-packages/ecto/../)
  
 
 # 
@@ -52,27 +52,28 @@ macro(ectomodule NAME)
   set(ecto_module_PYTHON_INSTALL ${ECTO_PYTHON_INSTALL_PATH}/${ARGS_DESTINATION})
   set(ecto_module_PYTHON_OUTPUT ${ECTO_PYTHON_BUILD_PATH}/${ARGS_DESTINATION})
 
-  if(WIN32)
-    link_directories(${Boost_LIBRARY_DIRS})
-    set(ECTO_MODULE_DEP_LIBS
-      ${PYTHON_LIBRARIES}
-      ${Boost_PYTHON_LIBRARY}
-      )
-  else()
-    set(ECTO_MODULE_DEP_LIBS
-      ${Boost_LIBRARIES}
-      ${PYTHON_LIBRARIES}
-      )
-  endif()
-  #these are required includes for every ecto module
-  include_directories(${ecto_INCLUDE_DIRS}
-                      ${PYTHON_INCLUDE_PATH}
-                      ${Boost_INCLUDE_DIRS}
-  )
 
-  add_library(${NAME}_ectomodule SHARED
+  # #these are required includes for every ecto module
+  # include_directories(${ecto_INCLUDE_DIRS}
+  #                     ${PYTHON_INCLUDE_PATH}
+  #                     ${BOOST_INCLUDE_DIRS}
+  # )
+
+  qi_create_lib(${NAME}_ectomodule SHARED
     ${ARGS_UNPARSED_ARGUMENTS}
-    )
+    DEPENDS PYTHON BOOST ecto
+    NO_RPATH
+  )
+  qi_use_lib(${NAME}_ectomodule
+    BOOST_DATE_TIME
+    BOOST_PYTHON
+    BOOST_REGEX
+    BOOST_SERIALIZATION
+    BOOST_SYSTEM
+    BOOST_THREAD
+    PYTHON
+    ECTO
+  )
   if(UNIX)
     set_target_properties(${NAME}_ectomodule
       PROPERTIES
@@ -101,20 +102,20 @@ macro(ectomodule NAME)
       SUFFIX ".so"
       )
   endif()
+  if(UNIX AND NOT APPLE)
+    set_target_properties(${NAME}_ectomodule
+        PROPERTIES
+          INSTALL_RPATH "\$ORIGIN/lib"
+      )
+  endif()
 
-  target_link_libraries(${NAME}_ectomodule
-    ${ECTO_MODULE_DEP_LIBS}
-    ${ecto_LIBRARIES}
-    )
-
-  set_target_properties(${NAME}_ectomodule PROPERTIES
-    LIBRARY_OUTPUT_DIRECTORY ${CATKIN_DEVEL_PREFIX}/${CATKIN_GLOBAL_PYTHON_DESTINATION}/${ARGS_DESTINATION}
-  )
+  # set_target_properties(${NAME}_ectomodule PROPERTIES
+  #   LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/sdk/lib/python2.7/dist-packages/${ARGS_DESTINATION}
+  # )
 
   if (ARGS_INSTALL)
-    install(TARGETS ${NAME}_ectomodule
-            DESTINATION ${CATKIN_GLOBAL_PYTHON_DESTINATION}/${ARGS_DESTINATION}
-            COMPONENT main
+    qi_install_target(${NAME}_ectomodule
+      SUBFOLDER python2.7/dist-packages/${ARGS_DESTINATION}
     )
   endif()
 endmacro()
@@ -122,7 +123,7 @@ endmacro()
 # ==============================================================================
 
 macro(link_ecto NAME)
-  target_link_libraries(${NAME}_ectomodule
+  qi_use_lib(${NAME}_ectomodule
     ${ARGN}
   )
 endmacro()
