@@ -65,12 +65,7 @@ macro(ectomodule NAME)
     NO_RPATH
   )
   qi_use_lib(${NAME}_ectomodule
-    BOOST_DATE_TIME
     BOOST_PYTHON
-    BOOST_REGEX
-    BOOST_SERIALIZATION
-    BOOST_SYSTEM
-    BOOST_THREAD
     PYTHON
     ECTO
   )
