@@ -56,7 +56,7 @@ macro(ectomodule NAME)
 
   qi_create_lib(${NAME}_ectomodule SHARED
     ${ARGS_UNPARSED_ARGUMENTS}
-    DEPENDS PYTHON BOOST ecto
+    DEPENDS PYTHON BOOST ECTO
     NO_RPATH
   )
   qi_use_lib(${NAME}_ectomodule
