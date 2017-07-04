@@ -26,7 +26,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-ectomodule(cells DESTINATION ecto INSTALL
+ectomodule(cells INSTALL
 And.cpp
 #BlackBox.cpp -- in ecto
 Constant.cpp
