@@ -26,7 +26,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-ectomodule(cells SUBFOLDER ecto INSTALL
+ectomodule(cells DESTINATION ecto INSTALL
 And.cpp
 #BlackBox.cpp -- in ecto
 Constant.cpp
