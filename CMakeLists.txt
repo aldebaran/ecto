@@ -43,6 +43,18 @@ include(cmake/doc.cmake)
 add_subdirectory(src)
 add_subdirectory(cmake)
 
+# add python sources in package
+set(PYTHON_INSTALL_SCHEME "DEBIAN")
+qi_install_python(
+	python/ecto/*.py
+	SUBFOLDER ecto
+)
+
+qi_install_python(
+	python/ecto/impl/*.py
+	SUBFOLDER ecto/impl
+)
+
 ###############################################################################
 # FROM HERE IT IS NOT WORKING WITH QIBUILD, WE KEEP IT IN CASE WE WANT TO USE #
 #               TESTS OR DOC BUILDING VIA QIBUILD IN THE FUTURE               #
