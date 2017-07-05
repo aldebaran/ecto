@@ -46,7 +46,7 @@ set(ECTO_PYTHON_INSTALL_PATH lib/python2.7/dist-packages/ecto/../)
 #                     module (it will be built/install in the right place but
 #                     you can specify submodules). e.g: ${PROJECT_NAME}/ecto_cells
 macro(ectomodule NAME)
-  cmake_parse_arguments(ARGS "INSTALL" "SUBFOLDER" "" ${ARGN})
+  cmake_parse_arguments(ARGS "INSTALL" "DESTINATION" "" ${ARGN})
 
   # #these are required includes for every ecto module
   # include_directories(${ecto_INCLUDE_DIRS}
@@ -95,13 +95,13 @@ macro(ectomodule NAME)
   if(UNIX AND NOT APPLE)
     set_target_properties(${NAME}_ectomodule
         PROPERTIES
-          INSTALL_RPATH "\$ORIGIN/../ecto/lib"
+          INSTALL_RPATH "\$ORIGIN/lib;\$ORIGIN/../lib"
       )
   endif()
 
   if (ARGS_INSTALL)
     qi_install_target(${NAME}_ectomodule
-      SUBFOLDER python2.7/dist-packages/${ARGS_SUBFOLDER}
+      SUBFOLDER python2.7/dist-packages/${ARGS_DESTINATION}
     )
   endif()
 endmacro()
