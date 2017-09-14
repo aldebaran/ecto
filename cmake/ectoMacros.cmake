@@ -95,7 +95,7 @@ macro(ectomodule NAME)
   if(UNIX AND NOT APPLE)
     set_target_properties(${NAME}_ectomodule
         PROPERTIES
-          INSTALL_RPATH "\$ORIGIN/lib;\$ORIGIN/../lib"
+          INSTALL_RPATH "\$ORIGIN/lib;\$ORIGIN/../ecto/lib"
       )
   endif()
 
