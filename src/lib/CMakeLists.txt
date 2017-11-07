@@ -56,6 +56,7 @@ add_library(ecto SHARED
   strand.cpp
   test.cpp
   time.cpp
+  customscheduler.cpp
   ${ecto_HEADERS}
   )
 

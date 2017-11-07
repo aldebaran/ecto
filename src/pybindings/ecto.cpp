@@ -33,6 +33,7 @@
 #include <boost/thread.hpp>
 
 #include <fstream>
+#include <ecto/customscheduler.hpp>
 namespace bp = boost::python;
 
 //forward declare all modules.
@@ -52,6 +53,8 @@ namespace ecto {
     void wrap_parameters();
     void wrap_ptime();
 
+    void wrapCustomSchedulers();
+    
     namespace {
       std::ofstream log_file;
       std::streambuf* stdout_orig = 0, *stderr_orig = 0, *log_rdbuf = 0;
@@ -149,6 +152,8 @@ BOOST_PYTHON_MODULE(ecto_main)
   ecto::py::wrap_parameters();
   ecto::py::wrap_ptime();
 
+  ecto::py::wrapCustomSchedulers();
+  
   bp::def("hardware_concurrency", &boost::thread::hardware_concurrency);
   bp::def("version",&ecto::py::versionstr);
   bp::def("abi",&ecto::py::abinum);

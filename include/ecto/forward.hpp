@@ -54,7 +54,8 @@ namespace ecto {
   template <typename T> struct cell_;
 
   class scheduler;
-
+  class CustomSchedulerSBR;
+    
   namespace graph {
     struct edge;
     typedef boost::shared_ptr<edge> edge_ptr;
