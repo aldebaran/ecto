@@ -14,7 +14,7 @@ CustomSchedulerSBR::~CustomSchedulerSBR()
 bool CustomSchedulerSBR::execute(vector<std::string> id)
 {  
   NodesVector transit;
-  for(auto it = id.begin(); it != id.end(); it++)
+  for(std::vector<std::string>::iterator it = id.begin(); it != id.end(); it++)
   {
     transit.push_back(findNode(*it));
   }
@@ -23,43 +23,6 @@ bool CustomSchedulerSBR::execute(vector<std::string> id)
   return this->execute(1);
 }
 
-bool CustomSchedulerSBR::execute_thread(vector<string> id)
-{
-  cout<<"Thread"<<endl;
-  NodesVector v;
-  for(auto it = id.begin(); it != id.end(); it++)
-  {
-    cout<<*it<<endl;
-    v.push_back(findNode(*it));
-  }
-  /*graph::graph_t::vertex_descriptor v = findNode(id);*/
-  compute_stack(v);
-  prepare_jobs(1);
-  
-  return run_thread();
-}
-
-bool CustomSchedulerSBR::run_thread()
-{
-    DepthType d = getDepthMap(stack_);
-    int i = 0;
-    NodesVector v = getDepthNodes(d, i);
-    
-    while(!v.empty())
-    {
-      m_threads.clear();
-      cout<<i<<" "<<v.size()<<endl;
-      i++;
-      v = getDepthNodes(d,i);
-      /*for(auto it = v.begin(); it != v.end(); it++)
-	m_threads.push_back(thread((cell&)(*(graph_[*it]->cell()))));
-      
-      for(auto t = m_threads.begin(); t != m_threads.end(); t++)
-	t->join();*/
-    }
-    
-    return false;
-}
 
 void CustomSchedulerSBR::compute_stack(NodesVector vec)
 {
@@ -86,16 +49,17 @@ void CustomSchedulerSBR::compute_stack(NodesVector vec)
 
 graph::graph_t::vertex_descriptor CustomSchedulerSBR::findNode(string id) const
 {
-    auto its = boost::vertices(graph_);
-    
-    graph::graph_t::vertex_descriptor ret;
-    for(auto it = its.first; it != its.second; it++)
-    {
-      if(graph_[*it]->cell()->name() == id)
-	ret  = *it;
-    }
-    
-    return ret;
+  graph::graph_t::vertex_iterator vit, vend;
+  boost::tie(vit, vend) = boost::vertices(graph_);
+
+  graph::graph_t::vertex_descriptor ret;
+  for(; vit != vend; ++vit)
+  {
+    if(graph_[*vit]->cell()->name() == id)
+      ret  = *vit;
+  }
+  
+  return ret;
 }
 
 std::map<std::string, int> CustomSchedulerSBR::getDepthMap() const
@@ -103,7 +67,7 @@ std::map<std::string, int> CustomSchedulerSBR::getDepthMap() const
   DepthType t = getDepthMap(getAllNodes());
   std::map<std::string, int> ret;
   
-  for(auto it = t.begin(); it != t.end(); it++)
+  for(DepthType::iterator it = t.begin(); it != t.end(); it++)
     ret[graph_[it->first]->cell()->name()] = it->second;
   
   return ret ;
@@ -117,26 +81,26 @@ CustomSchedulerSBR::DepthType CustomSchedulerSBR::getDepthMap(NodesVector vec) c
     do
     {
       turn = false;
-      for(auto it = vec.begin(); it != vec.end(); it++)
+      for(NodesVector::iterator it = vec.begin(); it != vec.end(); it++)
       {
-	if(ret.count(*it) == 0)
-	  ret[*it] = -1;
+        if(ret.count(*it) == 0)
+          ret[*it] = -1;
 
-	int deep = -1;
+        int deep = -1;
 
-	for(auto it2 = adjacent_vertices(*it, graph_).first; it2 != adjacent_vertices(*it, graph_).second; it2++)
-	{
-	  if(ret.count(*it2) == 0)
-	    ret[*it2] = -1;
+        for(graph::graph_t::adjacency_iterator it2 = adjacent_vertices(*it, graph_).first; it2 != adjacent_vertices(*it, graph_).second; it2++)
+        {
+          if(ret.count(*it2) == 0)
+            ret[*it2] = -1;
 
-	  deep = max(deep, ret[*it2]);
-	}
+          deep = max(deep, ret[*it2]);
+        }
 
-	if(deep+1 != ret[*it])
-	{
-	  ret[*it] = deep+1;
-	  turn = true;
-	}
+        if(deep+1 != ret[*it])
+        {
+          ret[*it] = deep+1;
+          turn = true;
+        }
       }
     }
     while(turn);
@@ -148,7 +112,7 @@ CustomSchedulerSBR::NodesVector CustomSchedulerSBR::getAllNodes() const
 {
   NodesVector ret;
   
-  for(auto it = vertices(graph_).first; it != vertices(graph_).second; it++)
+  for(graph::graph_t::vertex_iterator it = vertices(graph_).first; it != vertices(graph_).second; it++)
     ret.push_back(*it);
   
   return ret;
@@ -160,7 +124,7 @@ CustomSchedulerSBR::NodesVector CustomSchedulerSBR::getSubgraph(NodesVector vec)
   ret = vec;
   queue<graph::graph_t::vertex_descriptor> stack;
   
-  for(auto it = vec.begin(); it != vec.end(); it++)
+  for(NodesVector::iterator it = vec.begin(); it != vec.end(); it++)
     stack.push(*it);
   
   
@@ -168,12 +132,12 @@ CustomSchedulerSBR::NodesVector CustomSchedulerSBR::getSubgraph(NodesVector vec)
   {
     graph::graph_t::vertex_descriptor a = stack.front();
     stack.pop();
-    for(auto it = adjacent_vertices(a, graph_).first; it != adjacent_vertices(a, graph_).second; it++)
+    for(graph::graph_t::adjacency_iterator it = adjacent_vertices(a, graph_).first; it != adjacent_vertices(a, graph_).second; it++)
     {
       if(count(ret.begin(), ret.end(), *it) == 0)
       {
-	ret.push_back(*it);
-	stack.push(*it);
+        ret.push_back(*it);
+        stack.push(*it);
       }
     }
   }
@@ -185,7 +149,7 @@ CustomSchedulerSBR::NodesVector CustomSchedulerSBR::getDepthNodes(DepthType m, i
 {
   NodesVector ret;
   
-  for(auto it = m.begin(); it != m.end(); it++)
+  for(DepthType::iterator it = m.begin(); it != m.end(); it++)
   {
     if(it->second == d)
       ret.push_back(it->first);
@@ -193,5 +157,3 @@ CustomSchedulerSBR::NodesVector CustomSchedulerSBR::getDepthNodes(DepthType m, i
   
   return ret;
 }
-
-    

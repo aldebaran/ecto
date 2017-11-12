@@ -23,41 +23,39 @@
 #include <map>
 #include <queue>
 #include <algorithm>
-#include <thread>
 
 namespace ecto
 {
-  class ECTO_EXPORT CustomSchedulerSBR: public scheduler
-  {
-  public:
-    typedef std::map<graph::graph_t::vertex_descriptor, int> DepthType;
-    typedef std::vector<graph::graph_t::vertex_descriptor> NodesVector;
-    
-    explicit CustomSchedulerSBR(plasm_ptr p);
-    ~CustomSchedulerSBR();
-    
-    using scheduler::execute;
-    using scheduler::prepare_jobs;
-    using scheduler::run_job;
-    using scheduler::run;
-    
-    bool execute(std::vector<std::string>);
-    bool execute_thread(std::vector<std::string>);
-    
-    bool run_thread();
-    std::map<std::string, int> getDepthMap() const;
-    
-  protected:
-    void compute_stack(NodesVector);
-    
-  private:
-    std::vector<std::thread> m_threads;
-    
-    NodesVector getDepthNodes(DepthType, int = 0) const;   
-    NodesVector getSubgraph(NodesVector);
-    NodesVector getAllNodes() const;
-    graph::graph_t::vertex_descriptor findNode(std::string) const;
-    DepthType getDepthMap(NodesVector) const;
-    
-  };
+
+class ECTO_EXPORT CustomSchedulerSBR: public scheduler
+{
+public:
+  typedef std::map<graph::graph_t::vertex_descriptor, int> DepthType;
+  typedef std::vector<graph::graph_t::vertex_descriptor> NodesVector;
+
+  explicit CustomSchedulerSBR(plasm_ptr p);
+  ~CustomSchedulerSBR();
+
+  using scheduler::execute;
+  using scheduler::prepare_jobs;
+  using scheduler::run_job;
+  using scheduler::run;
+
+  bool execute(std::vector<std::string>);
+  bool execute_thread(std::vector<std::string>);
+
+  bool run_thread();
+  std::map<std::string, int> getDepthMap() const;
+
+protected:
+  void compute_stack(NodesVector);
+
+private:
+  NodesVector getDepthNodes(DepthType, int = 0) const;
+  NodesVector getSubgraph(NodesVector);
+  NodesVector getAllNodes() const;
+  graph::graph_t::vertex_descriptor findNode(std::string) const;
+  DepthType getDepthMap(NodesVector) const;
+
+};
 }

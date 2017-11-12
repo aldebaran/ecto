@@ -20,20 +20,20 @@ namespace ecto {
       T p;
       for(int i = 0; i < len(l); i++)
       {
-	p = bp::extract<T>(l[i]);
-	ret.push_back(p);
+        p = bp::extract<T>(l[i]);
+        ret.push_back(p);
       }
       return ret;
     }
     
     template <class K, class V>
     bp::dict toPythonDict(std::map<K, V> map) {
-	typename std::map<K, V>::iterator iter;
-	    bp::dict dictionary;
-	    for (iter = map.begin(); iter != map.end(); ++iter) {
-		    dictionary[iter->first] = iter->second;
-	    }
-	    return dictionary;
+      typename std::map<K, V>::iterator iter;
+      bp::dict dictionary;
+      for (iter = map.begin(); iter != map.end(); ++iter) {
+        dictionary[iter->first] = iter->second;
+      }
+      return dictionary;
     }
     
     template <typename T> bool execute0 (T& s) { return s.execute(); }
@@ -41,13 +41,13 @@ namespace ecto {
     { return s.execute(arg1); }
 
     template <typename T> bool execute2 (T& s, bp::list id) { return s.execute(toStdVector<std::string>(id)); }
-    template <typename T> bool execute3 (T& s, bp::list id) 
-    { 
-      std::vector<std::string> v = toStdVector<std::string>(id);
-	
-      return s.execute_thread(v); 
+    // template <typename T> bool execute3 (T& s, bp::list id)
+    // {
+    //   std::vector<std::string> v = toStdVector<std::string>(id);
+
+    //   return s.execute_thread(v);
       
-    }
+    // }
         
     template <typename T> bool prepare_jobs0 (T& s)
     { return s.prepare_jobs(); }
@@ -59,8 +59,8 @@ namespace ecto {
     template <typename T> bool run1 (T& s, unsigned arg1)
     { return s.run(arg1); }
 
-    template <typename T> bool run2 (T& s)
-    { return s.run_thread(); }
+    // template <typename T> bool run2 (T& s)
+    // { return s.run_thread(); }
 
     template <typename T> bp::dict depthMap (T& s)
     { return toPythonDict(s.getDepthMap()); }
@@ -73,8 +73,8 @@ namespace ecto {
         .def("execute", &execute2<T>, arg("id"))
         .def("execute", &execute0<T>)
         .def("execute", &execute1<T>, arg("niter"))
-        .def("execute_thread", &execute3<T>, arg("id"))
-	.def("prepare_jobs", &prepare_jobs0<T>)
+        // .def("execute_thread", &execute3<T>, arg("id"))
+        .def("prepare_jobs", &prepare_jobs0<T>)
         .def("prepare_jobs", &prepare_jobs1<T>, arg("niter"))
       
         //.def("interrupt", &T::interrupt)
@@ -83,11 +83,11 @@ namespace ecto {
         //.def("wait", &T::wait)
         .def("run", &run0<T>)
         .def("run", &run1<T>, arg("timeout_usec"))
-	.def("run_thread", &run2<T>)
+        // .def("run_thread", &run2<T>)
         .def("run_job", &T::run_job)
         .def("stats", &T::stats)
-	.def("getDepthMap", &depthMap<T>)
-	;
+        .def("getDepthMap", &depthMap<T>)
+      ;
     }
 
     void wrapCustomSchedulers()
