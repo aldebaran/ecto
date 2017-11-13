@@ -52,27 +52,59 @@ macro(ectomodule NAME)
   set(ecto_module_PYTHON_INSTALL ${ECTO_PYTHON_INSTALL_PATH}/${ARGS_DESTINATION})
   set(ecto_module_PYTHON_OUTPUT ${ECTO_PYTHON_BUILD_PATH}/${ARGS_DESTINATION})
 
-  if(WIN32)
-    link_directories(${Boost_LIBRARY_DIRS})
-    set(ECTO_MODULE_DEP_LIBS
-      ${PYTHON_LIBRARIES}
-      ${Boost_PYTHON_LIBRARY}
-      )
-  else()
-    set(ECTO_MODULE_DEP_LIBS
-      ${Boost_LIBRARIES}
-      ${PYTHON_LIBRARIES}
-      )
-  endif()
-  #these are required includes for every ecto module
-  include_directories(${ecto_INCLUDE_DIRS}
-                      ${PYTHON_INCLUDE_PATH}
-                      ${Boost_INCLUDE_DIRS}
-  )
+  if(DEFINED qibuild_DIR)
 
-  add_library(${NAME}_ectomodule SHARED
-    ${ARGS_UNPARSED_ARGUMENTS}
+    qi_create_lib(${NAME}_ectomodule SHARED
+      ${ARGS_UNPARSED_ARGUMENTS}
+      DEPENDS PYTHON BOOST ECTO
+      NO_RPATH
     )
+    qi_use_lib(${NAME}_ectomodule
+      BOOST_PYTHON
+      PYTHON
+      ECTO
+    )
+
+  else()
+
+    if(WIN32)
+      link_directories(${Boost_LIBRARY_DIRS})
+      set(ECTO_MODULE_DEP_LIBS
+        ${PYTHON_LIBRARIES}
+        ${Boost_PYTHON_LIBRARY}
+        )
+    else()
+      set(ECTO_MODULE_DEP_LIBS
+        ${Boost_LIBRARIES}
+        ${PYTHON_LIBRARIES}
+        )
+    endif()
+    #these are required includes for every ecto module
+    include_directories(${ecto_INCLUDE_DIRS}
+                        ${PYTHON_INCLUDE_PATH}
+                        ${Boost_INCLUDE_DIRS}
+    )
+
+    add_library(${NAME}_ectomodule SHARED
+      ${ARGS_UNPARSED_ARGUMENTS}
+      )
+
+    target_link_libraries(${NAME}_ectomodule
+      ${ECTO_MODULE_DEP_LIBS}
+      ${ecto_LIBRARIES}
+      )
+
+    set_target_properties(${NAME}_ectomodule PROPERTIES
+      LIBRARY_OUTPUT_DIRECTORY ${CATKIN_DEVEL_PREFIX}/${CATKIN_GLOBAL_PYTHON_DESTINATION}/${ARGS_DESTINATION}
+    )
+
+    if (ARGS_INSTALL)
+      install(TARGETS ${NAME}_ectomodule
+              DESTINATION ${CATKIN_GLOBAL_PYTHON_DESTINATION}/${ARGS_DESTINATION}
+              COMPONENT main
+      )
+    endif()
+  endif()
   if(UNIX)
     set_target_properties(${NAME}_ectomodule
       PROPERTIES
@@ -100,22 +132,6 @@ macro(ectomodule NAME)
       PROPERTIES
       SUFFIX ".so"
       )
-  endif()
-
-  target_link_libraries(${NAME}_ectomodule
-    ${ECTO_MODULE_DEP_LIBS}
-    ${ecto_LIBRARIES}
-    )
-
-  set_target_properties(${NAME}_ectomodule PROPERTIES
-    LIBRARY_OUTPUT_DIRECTORY ${CATKIN_DEVEL_PREFIX}/${CATKIN_GLOBAL_PYTHON_DESTINATION}/${ARGS_DESTINATION}
-  )
-
-  if (ARGS_INSTALL)
-    install(TARGETS ${NAME}_ectomodule
-            DESTINATION ${CATKIN_GLOBAL_PYTHON_DESTINATION}/${ARGS_DESTINATION}
-            COMPONENT main
-    )
   endif()
 endmacro()
 

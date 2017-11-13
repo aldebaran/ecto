@@ -32,63 +32,116 @@ file(GLOB ecto_HEADERS
   )
 source_group("Headers" FILES ${ecto_HEADERS})
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-
-add_library(ecto SHARED
-  abi.cpp
-  cell.cpp
-  edge.cpp
-  tendril.cpp
-  tendrils.cpp
-  plasm.cpp
-  plasm/impl.cpp
-  util.cpp
-  log.cpp
-  except.cpp
-  parameters.cpp
-  profile.cpp
-  python.cpp
-  registry.cpp
-  rethrow.cpp
-  serialization.cpp
-  scheduler.cpp
-  graph/utilities.cpp
-  strand.cpp
-  test.cpp
-  time.cpp
-  customscheduler.cpp
-  ${ecto_HEADERS}
+if(DEFINED qibuild_DIR)
+  include_directories(
+    ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_BINARY_DIR}/sdk/include
   )
 
-target_link_libraries(ecto
-  ${Boost_LIBRARIES}
-  ${catkin_LIBRARIES}
-  ${PYTHON_LIBRARIES}
-  ${CMAKE_THREAD_LIBS_INIT}
-)
-
-set_source_files_properties(log.cpp
-  PROPERTIES
-  COMPILE_FLAGS -DSOURCE_DIR=\\"${ecto_SOURCE_DIR}\\"
+  qi_create_lib(ecto SHARED
+    SRC
+    abi.cpp
+    cell.cpp
+    edge.cpp
+    tendril.cpp
+    tendrils.cpp
+    plasm.cpp
+    plasm/impl.cpp
+    util.cpp
+    log.cpp
+    except.cpp
+    parameters.cpp
+    profile.cpp
+    python.cpp
+    registry.cpp
+    rethrow.cpp
+    serialization.cpp
+    scheduler.cpp
+    graph/utilities.cpp
+    strand.cpp
+    test.cpp
+    time.cpp
+    customscheduler.cpp
   )
 
-if(UNIX)
-  set_target_properties(ecto PROPERTIES
-    COMPILE_FLAGS "${FASTIDIOUS_FLAGS}"
-    VERSION ${ecto_VERSION}
-    SOVERSION ${ECTO_SOVERSION}
+  qi_use_lib(ecto
+    BOOST_DATE_TIME
+    BOOST_PYTHON
+    BOOST_REGEX
+    BOOST_SERIALIZATION
+    BOOST_SYSTEM
+    BOOST_THREAD
+    PYTHON
+  )
+
+  qi_stage_lib(ecto
+    CUSTOM_CODE
+    "include(\${CMAKE_CURRENT_LIST_FILE}/../ectoMacros.cmake OPTIONAL)"
+  )
+
+  set_source_files_properties(log.cpp
+    PROPERTIES
+    COMPILE_FLAGS -DSOURCE_DIR=\\"${ecto_SOURCE_DIR}\\"
+  )
+
+else()
+  include_directories(${CMAKE_CURRENT_SOURCE_DIR})
+  add_library(ecto SHARED
+    abi.cpp
+    cell.cpp
+    edge.cpp
+    tendril.cpp
+    tendrils.cpp
+    plasm.cpp
+    plasm/impl.hpp
+    plasm/impl.cpp
+    util.cpp
+    log.cpp
+    except.cpp
+    parameters.cpp
+    profile.cpp
+    python.cpp
+    registry.cpp
+    rethrow.cpp
+    serialization.cpp
+    scheduler.cpp
+    graph/utilities.cpp
+    strand.cpp
+    test.cpp
+    time.cpp
+    ${ecto_HEADERS}
+  )
+
+  target_link_libraries(ecto
+    ${Boost_LIBRARIES}
+    ${catkin_LIBRARIES}
+    ${PYTHON_LIBRARIES}
+    ${CMAKE_THREAD_LIBS_INIT}
+  )
+
+  set_source_files_properties(log.cpp
+    PROPERTIES
+    COMPILE_FLAGS -DSOURCE_DIR=\\"${ecto_SOURCE_DIR}\\"
+  )
+
+  if(UNIX)
+    set_target_properties(ecto PROPERTIES
+      COMPILE_FLAGS "${FASTIDIOUS_FLAGS}"
+      VERSION ${ecto_VERSION}
+      SOVERSION ${ECTO_SOVERSION}
     )
-elseif(WIN32)
-  set_target_properties(ecto PROPERTIES
-    COMPILE_FLAGS "${FASTIDIOUS_FLAGS}"
-    VERSION ${ecto_VERSION}
-    SOVERSION ${ECTO_SOVERSION}
-    OUTPUT_NAME ecto_cpp
+  elseif(WIN32)
+    set_target_properties(ecto PROPERTIES
+      COMPILE_FLAGS "${FASTIDIOUS_FLAGS}"
+      VERSION ${ecto_VERSION}
+      SOVERSION ${ECTO_SOVERSION}
+      OUTPUT_NAME ecto_cpp
     )
+  endif()
+
+  #install the main shared lib
+  install(TARGETS ecto
+          DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+          COMPONENT main
+  )
 endif()
-
-#install the main shared lib
-install(TARGETS ecto
-        DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-        COMPONENT main
-)

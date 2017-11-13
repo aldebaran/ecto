@@ -35,10 +35,13 @@ find_package(Boost COMPONENTS
   REQUIRED
   )
 
+# When including Boost headers, we include both BOOST_INCLUDE_DIRS and
+# Boost_INCLUDE_DIRS as qibuild uses the first one and catkin the second
+
 try_run(BOOST_VERSION_RUN_RESULT BOOST_VERSION_COMPILE_RESULT
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/cmake/boost-version.c
-  COMPILE_DEFINITIONS -I${Boost_INCLUDE_DIRS}
+  COMPILE_DEFINITIONS -I${Boost_INCLUDE_DIRS},${BOOST_INCLUDE_DIRS}
   COMPILE_OUTPUT_VARIABLE BOOST_VERSION_COMPILE
   RUN_OUTPUT_VARIABLE Boost_VERSION
   )
@@ -53,7 +56,7 @@ macro(boost_feature_check checkname)
     try_compile(${checkname}
       ${CMAKE_BINARY_DIR}/${CMAKE_FILES_DIRECTORY}/${checkname}
       ${CMAKE_CURRENT_SOURCE_DIR}/cmake/boost_checks.cpp
-      COMPILE_DEFINITIONS -I${Boost_INCLUDE_DIRS} -D${checkname}=1
+      COMPILE_DEFINITIONS -I${Boost_INCLUDE_DIRS},${BOOST_INCLUDE_DIRS} -D${checkname}=1
       OUTPUT_VARIABLE ${checkname}_OUTPUT
       )
     message(STATUS "${checkname}: ${${checkname}}")

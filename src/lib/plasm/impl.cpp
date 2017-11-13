@@ -27,7 +27,7 @@
 // 
 #include <ecto/all.hpp>
 
-#include "plasm/impl.hpp"
+#include "impl.hpp"
 
 namespace ecto {
 
