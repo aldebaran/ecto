@@ -99,7 +99,7 @@ namespace ecto {
 
       using bp::arg;
 
-      wrap_customscheduler<ecto::CustomSchedulerSBR>("CustomSchedulerSBR");
+      wrap_customscheduler<ecto::CustomSchedulerSBR>("ImprovedScheduler");
     }
     //}
   }
