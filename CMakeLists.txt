@@ -41,6 +41,8 @@ if(DEFINED qibuild_DIR)
   set(CATKIN_PACKAGE_SHARE_DESTINATION share)
   set(CATKIN_PACKAGE_INCLUDE_DESTINATION include/ecto)
   set(CATKIN_PACKAGE_PYTHON_DESTINATION lib/python2.7/dist-packages/ecto/)
+  set(CATKIN_GLOBAL_PYTHON_DESTINATION lib/python2.7/dist-packages/)
+  set(CATKIN_PACKAGE_LIB_DESTINATION lib)
 
   # Adapt qibuild globals to catkin globals
   set(Boost_INCLUDE_DIRS ${BOOST_INCLUDE_DIRS})

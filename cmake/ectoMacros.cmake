@@ -98,13 +98,15 @@ macro(ectomodule NAME)
       LIBRARY_OUTPUT_DIRECTORY ${CATKIN_DEVEL_PREFIX}/${CATKIN_GLOBAL_PYTHON_DESTINATION}/${ARGS_DESTINATION}
     )
 
-    if (ARGS_INSTALL)
-      install(TARGETS ${NAME}_ectomodule
-              DESTINATION ${CATKIN_GLOBAL_PYTHON_DESTINATION}/${ARGS_DESTINATION}
-              COMPONENT main
-      )
-    endif()
   endif()
+
+  if (ARGS_INSTALL)
+    install(TARGETS ${NAME}_ectomodule
+            DESTINATION ${CATKIN_GLOBAL_PYTHON_DESTINATION}/${ARGS_DESTINATION}
+            COMPONENT main
+    )
+  endif()
+
   if(UNIX)
     set_target_properties(${NAME}_ectomodule
       PROPERTIES
