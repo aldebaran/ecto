@@ -114,7 +114,8 @@ macro(ectomodule NAME)
       COMPILE_FLAGS "${FASTIDIOUS_FLAGS}"
       LINK_FLAGS -shared-libgcc
       PREFIX ""
-      )
+      INSTALL_RPATH "\$ORIGIN/../ecto/lib"
+    )
   elseif(WIN32)
     execute_process(COMMAND ${PYTHON_EXECUTABLE} -c "import distutils.sysconfig; print distutils.sysconfig.get_config_var('SO')"
       RESULT_VARIABLE PYTHON_PY_PROCESS
